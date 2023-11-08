@@ -1,4 +1,38 @@
+function getCallerFileNameAndLine(){
+  function getException() {
+          try {
+              throw Error('');
+          } catch (err) {
+              return err;
+          }
+      }
+      
+  const err = getException();
+
+  const stack = err.stack;
+  const stackArr = stack.split('\n');
+  let callerLogIndex = 4;
+  // console.log("", stackArr);
+  // for (let i = 0; i < stackArr.length; i++) {
+  //     if (stackArr[i].indexOf('Map.Logger') > 0 && i + 1 < stackArr.length) {
+  //         callerLogIndex = i + 1;
+  //         break;
+  //     }
+  // }
+
+  if (callerLogIndex !== 0) {
+      let callerStackLine = stackArr[callerLogIndex + 1];
+      let five = `${callerStackLine.substring(callerStackLine.lastIndexOf("/") + 1, callerStackLine.lastIndexOf(':'))}`;
+      callerStackLine = stackArr[callerLogIndex];
+      let four = `${callerStackLine.substring(callerStackLine.lastIndexOf("/") + 1, callerStackLine.lastIndexOf(':'))}`
+      return `${four} ${five}`
+  } else {
+      return '-';
+  }
+}
+
 (function() {
+
   var Engine = window.Engine = {
 
     SITE_URL: encodeURIComponent("http://adarkroom.doublespeakgames.com"),
@@ -72,8 +106,8 @@
 
     options: {
       state: null,
-      debug: false,
-      log: false,
+      debug: true,
+      log: true,
       dropbox: false,
       doubleTime: false
     },
@@ -85,6 +119,12 @@
       );
       this._debug = this.options.debug;
       this._log = this.options.log;
+
+      if (this._log) {
+        this.log = console.log;
+      } else {
+        this.log = function(msg) {};
+      }
 
       // Check for HTML5 support
       if(!Engine.browserValid()) {
@@ -663,11 +703,42 @@
       }
     },
 
-    log: function(msg) {
-      if(this._log) {
-        console.log(msg);
-      }
-    },
+    // log: function(msg) {
+    //   if(this._log) {
+    //     console.log(msg);
+    //   }
+    // },
+    // log: function() {
+    //   if(!this._log) {
+    //     return;
+    //   }
+    //   // 创建一个Error对象以获取堆栈跟踪信息
+    //   var error = new Error();
+  
+    //   // 获取堆栈信息
+    //   var stack = error.stack;
+  
+    //   // 将堆栈信息分解成行数组
+    //   var stackLines = stack.split('\n');
+  
+    //   // 第3行通常包含调用者的位置信息
+    //   if (stackLines.length >= 3) {
+    //     var callerInfo = stackLines[2];
+  
+    //     // 在这个示例中，我们只提取文件名和行号
+    //     var fileInfo = callerInfo.match(/(\/[^\/]+:\d+)/);
+    //     if (fileInfo) {
+    //       fileInfo = fileInfo[0];
+    //       console.log('Caller at ' + fileInfo);
+    //     }
+    //   }
+    //   // 接下来，您可以执行其他日志操作
+    //   // ...
+  
+    //   // 最后，调用console.log来输出日志信息
+    //   console.log.apply(console, arguments);
+    // },
+    // log: console.log,
 
     updateSlider: function() {
       var slider = $('#locationSlider');
@@ -924,9 +995,15 @@ function setYPosition(elem, y) {
 $.Dispatch = function( id ) {
   var callbacks, topic = id && Engine.topics[ id ];
   if ( !topic ) {
-    callbacks = jQuery.Callbacks();
+    callbacks = jQuery.Callbacks(); 
+    let fire = (data) => {
+      let from = getCallerFileNameAndLine();
+      Engine.log(`%c[%c${from}%c] %cengine dispatch:${id}`, 'color: white;', 'color: green;','color: white;','color: white;', data);
+
+      callbacks.fire(data);
+    }
     topic = {
-      publish: callbacks.fire,
+      publish: fire,
       subscribe: callbacks.add,
       unsubscribe: callbacks.remove
     };

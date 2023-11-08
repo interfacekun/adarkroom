@@ -173,10 +173,11 @@ var AudioEngine = {
         if (!AudioEngine._initialized) {
           return;
         }
-        AudioEngine.loadAudioFile(src)
-            .then(function (buffer) {
-                AudioEngine._playBackgroundMusic(buffer);
-            });
+        //TODO 音效bug
+        // AudioEngine.loadAudioFile(src)
+        //     .then(function (buffer) {
+        //         AudioEngine._playBackgroundMusic(buffer);
+        //     });
     },
     playEventMusic: function (src) {
         if (!AudioEngine._initialized) {
@@ -197,10 +198,11 @@ var AudioEngine = {
         if (!AudioEngine._initialized) {
           return;
         }
-        AudioEngine.loadAudioFile(src)
-            .then(function (buffer) {
-                AudioEngine._playSound(buffer);
-            });
+         //TODO 音效bug
+        // AudioEngine.loadAudioFile(src)
+        //     .then(function (buffer) {
+        //         AudioEngine._playSound(buffer);
+        //     });
     },
     loadAudioFile: function (src) {
         if (src.indexOf('http') === -1) {

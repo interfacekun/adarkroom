@@ -74,6 +74,7 @@ var StateManager = {
 	//set single state
 	//if noEvent is true, the update event won't trigger, useful for setting multiple states first
 	set: function(stateName, value, noEvent) {
+		
 		var fullPath = $SM.buildPath(stateName);
 
 		//make sure the value isn't over the engine maximum
@@ -95,6 +96,8 @@ var StateManager = {
 		if(!noEvent) {
 			Engine.saveGame();
 			$SM.fireUpdate(stateName);
+			// let from = getCallerFileNameAndLine()
+			// Engine.log(`%c[%c${from}%c] %cstate set:${stateName} value:${value}`, 'color: white;', 'color: green;','color: white;','color: white;');
 		}
 	},
 
