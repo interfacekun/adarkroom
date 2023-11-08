@@ -998,7 +998,7 @@ $.Dispatch = function( id ) {
     callbacks = jQuery.Callbacks(); 
     let fire = (data) => {
       let from = getCallerFileNameAndLine();
-      Engine.log(`%c[%c${from}%c] %cengine dispatch:${id}`, 'color: white;', 'color: green;','color: white;','color: white;', data);
+      Engine.log(`%c[%c${from}%c] %cengine dispatch:${id}`, 'color: white;', 'color: yellow;','color: white;','color: white;', data);
 
       callbacks.fire(data);
     }
